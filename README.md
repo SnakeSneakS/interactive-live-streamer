@@ -15,3 +15,7 @@
 - Google Chrome, ver. 99.0.4844.84（Official Build） （x86_64）
 
 # Usage 
+- run ```npm start``` 
+    - ```localhost``` is ok. Please refer to [api](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia#privacy_and_security).
+    - to enable browser to access camera, microphone, or screen, you must give permission to your browser. Google it.
+    
