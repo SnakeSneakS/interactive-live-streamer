@@ -4,12 +4,18 @@
 # Demo
 
 # Features
-- screen share
-- realtime comment 
-- realtime reaction (with sound)
-- realtime quationnaire
-- pose-estimation based character controller
-- voice changer
+- [ ] screen share
+- [ ] realtime comment 
+- [ ] realtime reaction (with sound)
+- [ ] realtime quationnaire
+- [ ] pose-estimation based character controller
+- [ ] voice changer
+- [ ] text-to-speech
+- [ ] speech-to-text
+- [ ] ban user 
+- [ ] timer
+- [ ] playing sound (like piano)
+- [ ] custom (plugin)
 
 # Test Environment
 - Google Chrome, ver. 99.0.4844.84（Official Build） （x86_64）
