@@ -1,4 +1,4 @@
-package room
+package model
 
 import (
 	"github.com/gorilla/websocket"
@@ -6,9 +6,10 @@ import (
 )
 
 type User struct {
-	ID       uint32          `json:"id"`
-	Username string          `json:"username"`
-	Conn     *websocket.Conn `json:"-"`
+	ID        uint32          `json:"id"`
+	Username  string          `json:"username"`
+	Conn      *websocket.Conn `json:"-"`
+	WsMsgChan chan []byte     `json:"-"` //WebSocket Message Channel
 }
 
 func NewUser(username string, conn *websocket.Conn) *User {

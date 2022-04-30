@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/gommon/log"
 	"github.com/snakesneaks/interactive-live-streamer/backend/core"
-	"github.com/snakesneaks/interactive-live-streamer/backend/service/manager/room"
+	"github.com/snakesneaks/interactive-live-streamer/backend/service/room/model"
 )
 
 const (
@@ -15,20 +15,20 @@ const (
 
 type RoomManager struct {
 	isPatroling bool
-	Rooms       map[string]*room.Room
+	Rooms       map[string]*model.Room
 }
 
 func NewRoomManager() *RoomManager {
 	r := &RoomManager{
 		isPatroling: false,
-		Rooms:       make(map[string]*room.Room, 0),
+		Rooms:       make(map[string]*model.Room, 0),
 	}
 	r.startPatrol()
 	return r
 }
 
-func (r *RoomManager) AddRoom(adminUserID uint32) *room.Room {
-	room := room.NewRoom(adminUserID)
+func (r *RoomManager) AddRoom(adminUserID uint32) *model.Room {
+	room := model.NewRoom(adminUserID)
 	for {
 		if _, ok := r.Rooms[room.AccessID]; !ok {
 			break
@@ -48,11 +48,11 @@ func (r *RoomManager) DeleteRoom(roomID string) {
 	delete(r.Rooms, roomID)
 }
 
-func (r *RoomManager) AddUser(roomID string, u *room.User) {
+func (r *RoomManager) AddUser(roomID string, u *model.User) {
 	r.Rooms[roomID].AddUser(u)
 }
 
-func (r *RoomManager) DeleteUser(roomID string, u *room.User) {
+func (r *RoomManager) DeleteUser(roomID string, u *model.User) {
 	r.Rooms[roomID].DeleteUser(u)
 }
 

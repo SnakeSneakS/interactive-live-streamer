@@ -1,6 +1,7 @@
-package room
+package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -87,4 +88,24 @@ func (r *Room) Publish(message string) {
 	for _, user := range r.Users {
 		user.Conn.WriteMessage(websocket.TextMessage, []byte(message))
 	}
+}
+
+//read websocket request
+func (r *Room) readUserMessage(u *User) {
+	for {
+		b, ok := <-u.WsMsgChan
+		if !ok {
+			r.DeleteUser(u)
+		}
+
+		var req Req
+		if err := json.Unmarshal(b, &req); err != nil {
+			log.Error(err)
+		}
+		r.handleUserReq(&req)
+	}
+}
+
+//handle websocket request
+func (r *Room) handleUserReq(req *Req) {
 }
