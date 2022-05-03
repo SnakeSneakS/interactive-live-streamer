@@ -18,12 +18,14 @@ const (
 	messageBufferSize = 512
 )
 
+var myUpgrader = newMyUpgrader()
+
 func WsCreateRoom(w http.ResponseWriter, r *http.Request) {
 	//core.AllowCORS(w)
-	log.Printf("Create Room Request!!")
+	log.Debug("Create Room Request!!")
 
 	//socket connection
-	socket, err := newMyUpgrader().Upgrade(w, r, nil)
+	socket, err := myUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Error(err)
 		w.Write([]byte(err.Error()))
@@ -32,22 +34,28 @@ func WsCreateRoom(w http.ResponseWriter, r *http.Request) {
 
 	//create user
 	u := model.NewUser("admin", socket)
-	socket.WriteJSON(model.UserInfoRes{User: u})
+	if err := u.Send(model.WsRes{Type: model.UserInfoResType, Data: model.UserInfoRes{User: u}}); err != nil {
+		log.Error(err)
+	}
+	log.Debug("New User", u)
 
 	//create and add room
 	createdRoom := service.RoomManager.AddRoom(u.ID)
 	createdRoom.AddUser(u)
-	socket.WriteJSON(model.RoomInfoRes{Room: createdRoom})
+	roomRes := model.WsRes{Type: model.RoomEnteredResType, Data: model.RoomEnteredRes{Room: createdRoom}}
+	if err := createdRoom.Publish(roomRes); err != nil {
+		log.Error(err)
+	}
+	log.Debug("New Room", createdRoom)
 
 	//handle message
 	go startReadMessage(socket, u)
-
 }
 
 func WsJoinRoom(w http.ResponseWriter, r *http.Request) {
 	//core.AllowCORS(w)
 	roomid := mux.Vars(r)["roomid"]
-	log.Printf("Join Room Request!! roomID=%s", roomid)
+	log.Debugf("Join Room Request!! roomID=%s", roomid)
 
 	//Room ID check
 	joinRoom, ok := service.RoomManager.Rooms[roomid]
@@ -57,7 +65,7 @@ func WsJoinRoom(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//socket connection
-	socket, err := newMyUpgrader().Upgrade(w, r, nil)
+	socket, err := myUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		w.Write([]byte(err.Error()))
 		return
@@ -65,11 +73,16 @@ func WsJoinRoom(w http.ResponseWriter, r *http.Request) {
 
 	//create user
 	u := model.NewUser("listener", socket)
-	socket.WriteJSON(model.UserInfoRes{User: u})
+	if err := u.Send(model.WsRes{Type: model.UserInfoResType, Data: model.UserInfoRes{User: u}}); err != nil {
+		log.Error(err)
+	}
 
 	//add User to room
 	joinRoom.AddUser(u)
-	socket.WriteJSON(model.RoomInfoRes{Room: joinRoom})
+	roomRes := model.WsRes{Type: model.RoomEnteredResType, Data: model.RoomEnteredRes{Room: joinRoom}}
+	if err := joinRoom.Publish(roomRes); err != nil {
+		log.Error(err)
+	}
 
 	//handle message
 	go startReadMessage(socket, u)
@@ -78,7 +91,7 @@ func WsJoinRoom(w http.ResponseWriter, r *http.Request) {
 //startReadMessage
 func startReadMessage(socket *websocket.Conn, u *model.User) {
 	defer func() {
-		close(u.WsMsgChan)
+
 	}()
 
 	for {
@@ -89,6 +102,8 @@ func startReadMessage(socket *websocket.Conn, u *model.User) {
 		}
 		u.WsMsgChan <- b
 	}
+
+	u.CloseConn()
 }
 
 //websocket upgrader

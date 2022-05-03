@@ -1,24 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
-import CaptureButton from './components/CaptureButton.js';
-import React, {useState} from "react"
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import React from "react"
+
+import MyNavBar from './components/pages/Base/NavBar';
+import MyRouter from './components/pages/Base/Router';
+import MyNavBarInRouter from 'components/pages/Base/NavBarInRouter';
+import Footer from 'components/pages/Base/Footer';
 
 
 function App() {
-  const [video, setVideo] = useState(<video></video>);
-
 
   return (
     <div className="App">
       <div>
-        <h1>aaa</h1>
-        <h2>iii</h2>
-        <div>
-          <CaptureButton />
-        </div>
-        <div>
-          {video}
-        </div>
+        <main>
+          <MyRouter before={<MyNavBarInRouter />} />
+        </main>
+        <Footer/>
       </div>
     </div>
   );

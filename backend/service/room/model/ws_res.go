@@ -1,12 +1,13 @@
 package model
 
-import "github.com/snakesneaks/snakesneaks-go-game-server-test/go-game-server/service/model"
+import "github.com/pion/webrtc/v3"
 
 //Res: Server -> Client
 
 const (
 	UserInfoResType WsResType = iota
 	RoomInfoResType
+	RoomEnteredResType
 
 	RtcSenderOfferResType
 	RtcSenderCandidatesResType
@@ -16,9 +17,10 @@ const (
 
 type WsResType int
 
-type Res struct {
-	Type WsResType `json:"type"`
-	Data []byte    `json:"data"`
+type WsRes struct {
+	//UserID uint32      `json:"user_id"` //message from whom
+	Type WsResType   `json:"type"`
+	Data interface{} `json:"data"`
 }
 
 type UserUpdateRes struct {
@@ -26,33 +28,35 @@ type UserUpdateRes struct {
 }
 
 type UserInfoRes struct {
-	User *model.User `json:"user"`
+	User *User `json:"user"`
 }
 
+//when newly entered room
+type RoomEnteredRes struct {
+	Room *Room `json:"room"`
+}
+
+//when you are already in room & new user has enterd to room
 type RoomInfoRes struct {
 	Room *Room `json:"room"`
 }
 
 type RtcSenderOfferRes struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Offer      string `json:"offer"`
+	FromUserID  uint32                    `json:"from_user_id"`
+	Description webrtc.SessionDescription `json:"description"`
 }
 
 type RtcSenderCandidatesRes struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Candidates string `json:"candidates"`
+	FromUserID uint32                    `json:"from_user_id"`
+	Candidates []webrtc.ICECandidateInit `json:"candidates"`
 }
 
 type RtcReceiverAnswerRes struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Offer      string `json:"offer"`
+	FromUserID  uint32                    `json:"from_user_id"`
+	Description webrtc.SessionDescription `json:"description"`
 }
 
 type RtcReceiverCandidatesRes struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Candidates string `json:"candidates"`
+	FromUserID uint32                    `json:"from_user_id"`
+	Candidates []webrtc.ICECandidateInit `json:"candidates"`
 }

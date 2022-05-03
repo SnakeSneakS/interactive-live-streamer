@@ -1,5 +1,7 @@
 package service
 
-import "github.com/snakesneaks/interactive-live-streamer/backend/service/manager"
+import (
+	"github.com/snakesneaks/interactive-live-streamer/backend/service/room"
+)
 
-var RoomManager = manager.NewRoomManager()
+var RoomManager = room.NewRoomManager()

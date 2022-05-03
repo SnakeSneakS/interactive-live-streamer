@@ -27,6 +27,6 @@ func NewHandler() *Handler {
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Handle %s", r.URL)
+	log.Debugf("Handle %s", r.URL)
 	h.r.ServeHTTP(w, r)
 }

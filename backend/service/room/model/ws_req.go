@@ -1,5 +1,7 @@
 package model
 
+import "github.com/pion/webrtc/v3"
+
 //Req: Client -> Server
 
 const (
@@ -12,7 +14,7 @@ const (
 
 type WsReqType int
 
-type Req struct {
+type WsReq struct {
 	Type WsReqType   `json:"type"`
 	Data interface{} `json:"data"`
 }
@@ -22,25 +24,21 @@ type UserUpdateReq struct {
 }
 
 type RtcSenderOfferReq struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Offer      string `json:"offer"`
+	ToUserID    uint32                    `json:"to_user_id"`
+	Description webrtc.SessionDescription `json:"description"`
 }
 
 type RtcSenderCandidatesReq struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Candidates string `json:"candidates"`
+	ToUserID   uint32                    `json:"to_user_id"`
+	Candidates []webrtc.ICECandidateInit `json:"candidates"`
 }
 
 type RtcReceiverAnswerReq struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Offer      string `json:"offer"`
+	ToUserID    uint32                    `json:"to_user_id"`
+	Description webrtc.SessionDescription `json:"description"`
 }
 
 type RtcReceiverCandidatesReq struct {
-	FromUserID uint32 `json:"from_user_id"`
-	ToUserID   uint32 `json:"to_user_id"`
-	Candidates string `json:"candidates"`
+	ToUserID   uint32                    `json:"to_user_id"`
+	Candidates []webrtc.ICECandidateInit `json:"candidates"`
 }

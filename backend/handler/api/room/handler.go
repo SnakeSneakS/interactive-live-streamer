@@ -27,7 +27,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleHome(w http.ResponseWriter, r *http.Request) {
-	log.Print("Handle Room Home !!!")
+	log.Debugf("Handle Room Home !!!")
 	w.Write([]byte(`
 	<html>
 	<head>

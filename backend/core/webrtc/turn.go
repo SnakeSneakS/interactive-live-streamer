@@ -1,9 +1,9 @@
 package webrtc
 
 import (
-	"log"
 	"os"
 
+	"github.com/labstack/gommon/log"
 	"github.com/pion/webrtc/v3"
 )
 
@@ -29,9 +29,9 @@ func startTurnServer() {
 		}
 		switch c.Typ {
 		case webrtc.ICECandidateTypeHost:
-			log.Println("Local IP Address:", c.Address)
+			log.Infof("Local IP Address:", c.Address)
 		case webrtc.ICECandidateTypeSrflx:
-			log.Println("Public IP Address:", c.Address)
+			log.Infof("Public IP Address:", c.Address)
 		}
 	})
 

@@ -11,7 +11,7 @@ var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 //GenerateRandomString generate string
 func GenerateRandomString(length int) string {
-	b := make([]rune, 0)
+	b := make([]rune, length)
 	len := len(letters)
 	for i := range b {
 		r := rand.Intn(len)

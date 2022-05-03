@@ -1,4 +1,4 @@
-package manager
+package room
 
 import (
 	"time"
@@ -33,7 +33,8 @@ func (r *RoomManager) AddRoom(adminUserID uint32) *model.Room {
 		if _, ok := r.Rooms[room.AccessID]; !ok {
 			break
 		}
-		room.AccessID = core.GenerateRandomString(32)
+		log.Warn("Duplicated Room ID", room.AccessID)
+		room.AccessID = core.GenerateRandomString(model.LengthRoomID)
 	}
 	r.Rooms[room.AccessID] = room
 	return room
@@ -54,6 +55,9 @@ func (r *RoomManager) AddUser(roomID string, u *model.User) {
 
 func (r *RoomManager) DeleteUser(roomID string, u *model.User) {
 	r.Rooms[roomID].DeleteUser(u)
+	if len(r.Rooms[roomID].Users) == 0 {
+		r.DeleteRoom(roomID)
+	}
 }
 
 //func (r *RoomManager) DeleteUser(u *room.User) {}
