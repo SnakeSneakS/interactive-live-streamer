@@ -21,6 +21,8 @@
 
 # TODO
 - frontend: error handling.
+    - Not readable error happens when trying to getDisplayMedia except chrome browser.
+        - don't work on safari.
 - backend: XXXXXX. 
 
 # Test Environment
@@ -37,3 +39,6 @@
     - to enable browser to access camera, microphone, or screen, you must give permission to your browser. Google it.
 ## backend
     
+# If screen capture didn't work
+- please allow access to your browser to screen capture
+    - on MacOS, SystemSettings>Security&privacy>ScreenRecording and allow access to your browser. 

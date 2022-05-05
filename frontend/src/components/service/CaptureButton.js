@@ -129,6 +129,61 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
     console.debug("stop capture", stream);
   }
 
+  //for older browsers 
+  const forOldergetDisplayMedia = () => {
+    //https://developer.mozilla.org/ja/docs/Web/API/MediaDevices/getUserMedia
+    
+    if (navigator.mediaDevices === undefined) {
+      navigator.mediaDevices = {};
+    }
+
+    if (navigator.mediaDevices.getDisplayMedia === undefined) {
+      navigator.mediaDevices.getDisplayMedia = function(constraints) {
+
+        var getDisplayMedia = navigator.webkitgetDisplayMedia || navigator.mozgetDisplayMedia || navigator.msgetDisplayMedia;
+
+      if (!getDisplayMedia) {
+          return Promise.reject(new Error('getDisplayMedia is not implemented in this browser'));
+        }
+
+        // Otherwise, wrap the call to the old navigator.getDisplayMedia with a Promise
+        return new Promise(function(resolve, reject) {
+          getDisplayMedia.call(navigator, constraints, resolve, reject);
+        });
+      }
+    }
+  }
+
+
+
+  // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
+  // Browser Compatibility: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia#browser_compatibility
+  async function startCapture() {
+    let captureStream = null;
+
+    try {
+      forOldergetDisplayMedia();
+      captureStream = await navigator.mediaDevices.getDisplayMedia({
+        //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia#parameters
+        video: {
+          cursor: "always",
+          frameRate: FPS,
+        }, 
+        audio: false /*{
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100,
+        } */
+      });
+    } catch(err) {
+      // 1: https or localhost:8080 じゃないとエラー
+      console.error("Error: " + err);
+      throw err;
+    }
+
+    return captureStream;
+  }
+
 
   return (
       <div> 
@@ -176,59 +231,7 @@ CaptureButton.defaultProps = {
 
 
 
-//for older browsers 
-const forOldergetDisplayMedia = () => {
-  //https://developer.mozilla.org/ja/docs/Web/API/MediaDevices/getUserMedia
-  
-  if (navigator.mediaDevices === undefined) {
-    navigator.mediaDevices = {};
-  }
 
-  if (navigator.mediaDevices.getDisplayMedia === undefined) {
-    navigator.mediaDevices.getDisplayMedia = function(constraints) {
-
-      var getDisplayMedia = navigator.webkitgetDisplayMedia || navigator.mozgetDisplayMedia || navigator.msgetDisplayMedia;
-
-     if (!getDisplayMedia) {
-        return Promise.reject(new Error('getDisplayMedia is not implemented in this browser'));
-      }
-
-      // Otherwise, wrap the call to the old navigator.getDisplayMedia with a Promise
-      return new Promise(function(resolve, reject) {
-        getDisplayMedia.call(navigator, constraints, resolve, reject);
-      });
-    }
-  }
-}
-
-
-
-// https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
-// Browser Compatibility: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia#browser_compatibility
-async function startCapture() {
-  let captureStream = null;
-
-  try {
-    forOldergetDisplayMedia();
-    captureStream = await navigator.mediaDevices.getDisplayMedia({
-      //https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia#parameters
-      video: {
-        cursor: "always"
-      }, 
-      audio: false /*{
-        echoCancellation: true,
-        noiseSuppression: true,
-        sampleRate: 44100,
-      } */
-    });
-  } catch(err) {
-    // 1: https or localhost:8080 じゃないとエラー
-    console.error("Error: " + err);
-    throw err;
-  }
-
-  return captureStream;
-}
 
 
 
