@@ -1,0 +1,37 @@
+version: '3'
+services:
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile 
+    ports:
+    - "8080:8080"
+    env_file:
+      - ./backend/.env
+    tty: true 
+    restart: always
+  frontend_dev:
+    build: 
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/app
+    tty: true 
+    restart: always
+  #frontend: 
+  #  build: 
+  #    context: ./frontend
+  #    dockerfile: Dockerfile
+  #  ports:
+  #    - "3001:80"
+  #  env_file:
+  #    - ./frontend/.env
+  #  tty: true 
+  #  restart: always
+  
+
+

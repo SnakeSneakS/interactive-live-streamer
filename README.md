@@ -27,6 +27,7 @@
 
 # Test Environment
 - Google Chrome, ver. 99.0.4844.84（Official Build） （x86_64）
+- node ver. v16.15.0
 
 # Required
 - set .env file for both of server&client (please refer .env.template file(s).)

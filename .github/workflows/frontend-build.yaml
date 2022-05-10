@@ -1,4 +1,4 @@
-name: backend-build
+name: frontend-build
 
 on: 
   push: 
@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths: 
-      - backend
+      - frontend
 
 env: 
   REGISTRY: ghcr.io
@@ -26,8 +26,8 @@ jobs:
     strategy:
       matrix: 
         include: 
-          - name: backend
-            file: /backend/Dockerfile
+          - name: frontend
+            file: /frontend/Dockerfile
             target: release  
 
     steps: 
