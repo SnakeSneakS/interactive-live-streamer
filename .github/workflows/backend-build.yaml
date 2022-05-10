@@ -27,7 +27,7 @@ jobs:
       matrix: 
         include: 
           - name: backend
-            file: /backend/Dockerfile
+            file: backend/Dockerfile
             target: release  
 
     steps: 
