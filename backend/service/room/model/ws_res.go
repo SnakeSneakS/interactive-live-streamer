@@ -60,3 +60,7 @@ type RtcReceiverCandidatesRes struct {
 	FromUserID uint32                    `json:"from_user_id"`
 	Candidates []webrtc.ICECandidateInit `json:"candidates"`
 }
+
+type RoomMessageRes struct {
+	Message string `json:"message"`
+}

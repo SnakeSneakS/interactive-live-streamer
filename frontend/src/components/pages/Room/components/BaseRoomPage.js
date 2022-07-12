@@ -19,12 +19,11 @@ let pcs = new Array(); //connected pcs.
 
 const BaseRoomPage = (props={path: "/api/room/xxx"}) => {
   const [myRoom, setMyRoom] = useState({access_id: "INVALID ROOM ID", users: {0:{id:0,username:"INVALID ROOM ID"},}})
-  const [myUser, setMyUser] = useState({user_id: "INVALID ROOM ID", username: "INVALID ROOM ID"})
+  const [myUser, setMyUser] = useState({user_id: "INVALID USER ID", username: "user"})
   const [streams, setStreams] = useState(new Array()); //{user_id: stream}
 
   const streamRef = useRef(null);
   const socketRef = useRef(null);
-
 
   //websocket setting 
   const path = props.path;   
@@ -208,17 +207,28 @@ const BaseRoomPage = (props={path: "/api/room/xxx"}) => {
     }); 
   }
 
+  //change my username
+  const onChangeMyUserName = (e) => {
+    console.debug(e.target.values);
+    setMyUser((prev)=>(
+      {
+        id: prev.id, 
+        username: e.target.value
+      }
+    ));
+  }
+
   return (
     <div>
-      <Alert Key={"danger"} variant={"danger"}>
-        <Alert.Heading>If error occur, i want to show alert like this. </Alert.Heading>
-        <p>additional information will be coming in some day.</p>
-      </Alert>
       <WebSocketCore path={path} onOpen={wsOnOpen} onMessage={wsOnMessage} onClose={wsOnClose} socketRef={socketRef}/>
       <RoomTitle roomid={myRoom?.access_id} />
       <div>
-        <p><small>my user id: {myUser?.id}</small></p>
-        <p><small>my user name: {myUser?.username}</small></p>
+        <p>
+          <small>my user id: {myUser?.id}</small>
+        </p>
+        <p>
+          <small>my user name: <input defaultValue={myUser?.username} onChange={onChangeMyUserName}></input> </small>
+        </p>
       </div>
       <hr />
       <div>

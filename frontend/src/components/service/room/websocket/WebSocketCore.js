@@ -1,9 +1,7 @@
-import { useCallback, useContext } from "react"
+import { useCallback } from "react"
 import { useEffect, useRef, useState } from "react"
 import process from "process"
-import { w3cwebsocket } from "websocket"
-import { client } from "websocket"
-import { checkPropTypes } from "prop-types"
+import { Alert } from 'react-bootstrap';
 
 
 // https://developer.mozilla.org/ja/docs/Web/API/WebSocket 
@@ -11,16 +9,20 @@ const WebSocketCore = ( props = {}) => {
     const hostname=process.env.REACT_APP_SERVER_HOSTNAME
     const port=process.env.REACT_APP_SERVER_PORT
     const url = `ws://${hostname}:${port}${props.path}`
+
+    const [isWsError, setIsWsError] = useState(false);
  
     
     useEffect(()=>{
         console.debug(`WEBSOCKET SERVER URL: ${url}`)  
+        setIsWsError(false);
         props.socketRef.current = new WebSocket(url);
         if(!props.socketRef.current){ throw new Error("websocket failed to create...") }
     
         //when connected
-        props.socketRef.current.onerror = ()=>{
-            console.error("Error when using websocket.");
+        props.socketRef.current.onerror = (e)=>{
+            console.error("Error when using websocket.", e);
+            setIsWsError(true);
         };
 
         //when receive message
@@ -58,8 +60,17 @@ const WebSocketCore = ( props = {}) => {
     }
 
     return (
-        <>
-        </>
+        <div>
+            <div>
+            { 
+                (!isWsError)?<></>:(
+                    <Alert Key={"danger"} variant={"danger"}>
+                        <Alert.Heading>Error: when connecting to server with websocket</Alert.Heading> 
+                    </Alert>
+                )
+            }
+            </div>
+        </div>
     );
 }
 

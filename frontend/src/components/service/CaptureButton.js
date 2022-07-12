@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, CardImg, Collapse } from 'react-bootstrap';
+import { Alert, Button, CardImg, Collapse } from 'react-bootstrap';
 import adapter from 'webrtc-adapter'; //https://github.com/webrtcHacks/adapter 
 import PeerWebRTC from './room/webrtc/PeerWebRTC';
 
@@ -19,6 +19,7 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
 
   //console.log("isSecureContext: ", window.isSecureContext);
   const [isCapture, setIsCapture] = useState(false);
+  const [captureError, setCaptureError] = useState(null);
 
   const [can, setCan] = useState(null);
   const [ctx, setCtx] = useState(null);
@@ -34,7 +35,6 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
     ctx.fillRect(0, 0, can.width, can.height); 
     const videoPlayer = document.getElementById("videoPlayer");
     setVideoPlayer(videoPlayer);
-
   }, [])
 
   //when removed, stop capturing
@@ -48,9 +48,8 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
     //capture screen 
     if(!isCapture){
       startCapture().catch((err)=>{
-        //console.error("Err", err);
+        //console.error("Catch Err", err);
       }).then((stream)=>{
-
         videoPlayer.srcObject = stream;
         //can.width=videoPlayer.srcObject.width;
 
@@ -92,6 +91,7 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
 
         //set Canvas Size
         setCanSize({width: 520, height: 380})
+        if(stream) setCaptureError(null);
 
         //set stream
         //props.streamRef.current=stream;
@@ -178,6 +178,7 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
     } catch(err) {
       // 1: https or localhost:8080 じゃないとエラー
       console.error("Error: " + err);
+      setCaptureError(err.toString());
       throw err;
     }
 
@@ -187,6 +188,13 @@ const CaptureButton = (props={ streamRef: null, onStartCapture: (stream)=>{conso
 
   return (
       <div> 
+        {
+        (captureError===null)?<></>:(
+          <Alert Key={"danger"} variant={"danger"}>
+              <Alert.Heading>{captureError}</Alert.Heading> 
+          </Alert>
+        )
+        }
         <video id="videoPlayer" autoPlay={true} width={0} height={0}></video>
         <div className="my-1"> 
           <p>settings: </p>

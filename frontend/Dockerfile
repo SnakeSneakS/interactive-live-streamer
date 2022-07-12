@@ -3,6 +3,8 @@
 FROM node:16.15.0-alpine AS builder
 WORKDIR /app
 COPY . /app 
+
+#pnpmを使うと速くなるとの声が(いつかやりたい) 
 RUN npm install 
 RUN npm run build
 
