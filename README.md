@@ -1,3 +1,5 @@
+# DEVELOPMENT WAS STOPPED
+
 # interactive-live-streamer
 - under the pandemic of corona virus, the chance of live-streaming seems to have increased. Howecer, live-streaming is in some ways troublesome. Have to set up cameras, voices, backscrean, etc. This application will support interactive live streaming just by using your web browser.
 
